@@ -1,5 +1,4 @@
-# Import the Pygame library
-from re import L
+from tkinter import Grid
 import pygame
 import random
 
@@ -22,15 +21,17 @@ snake_direction = 'down'  # The direction the snake is moving in
 
 head_x, head_y = snake_blocks[0] #this is called touple unpacking
 
-r1_x = random.randint(0, 40)
-r1_y = random.randint(0, 40)
-r2_x = random.randint(0, 40)
-r2_y = random.randint(0, 40)
+r1_x = random.randint(0, GRID_SIZE)
+r1_y = random.randint(0, GRID_SIZE)
+r2_x = random.randint(0, GRID_SIZE)
+r2_y = random.randint(0, GRID_SIZE)
 
 snake_food = [(r1_x, r1_y), (r2_x, r2_y)]
 
+food_counter = 2
 
 
+snake_length = 3
 
 clock = pygame.time.Clock()
 
@@ -40,23 +41,12 @@ running = True
 once = True
 
 while running:
-    
-     # Update the position of the food only if the snake has eaten it
-    if (head_x, head_y) in snake_food:
-        snake_food.remove((head_x, head_y))
-        r1_x = random.randint(0, 40)
-        r1_y = random.randint(0, 40)
-        r2_x = random.randint(0, 40)
-        r2_y = random.randint(0, 40)
+  
 
     
-    snake_food = [(r1_x, r1_y), (r2_x, r2_y)]
 
-    
     # Store the position of the food in a list
     
-
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -85,20 +75,16 @@ while running:
     elif snake_direction == 'left':
         head_x -= 1
     
-    
-    
-    
     # if x is less than 0 or greater than width, or y is less than zero or greater than heigth, end the game
     #this is for boundaries
     if head_x < 0 or head_x >= GRID_WIDTH or head_y < 0 or head_y >= GRID_HEIGHT:
         running = False
 
-    
     # Check for collision with snake body
     #checking to see if the tuple is in the second to i'th element of the array
     #what does it mean if the head is somewhere else other than the front? collision
     if (head_x, head_y) in snake_blocks[1:]:
-        print('triggered by me,  if (head_x, head_y) in snake_blocks[1:]: ')
+        print(' crashed into yourself, game over, your score was  ', snake_length - 3)
         running = False
     
     # Update the snake's position
@@ -106,9 +92,6 @@ while running:
     
     snake_blocks.insert(0, (head_x, head_y))
     
-    
-
-
     if (head_x, head_y) != snake_blocks[-2]:
         snake_blocks.pop()
     
@@ -121,35 +104,41 @@ while running:
     for y in range(GRID_HEIGHT):
         pygame.draw.line(game_window, (255, 255, 255), (0, y * GRID_SIZE), (WINDOW_WIDTH, y * GRID_SIZE))
     
-    # draws the snake
-    #by making a loop that draws a rect for 
-
+   
     for block in snake_blocks:
+        snake_color1 = random.randint(10, 70)
+        snake_color2 = random.randint(150, 255)
+        snake_color3 = random.randint(10, 70)
+
         #the position of the blocks are miltiples of the grid so it gives it the 
         #illusion of being whithin the grid
         #in reality whats happening is that the blocks are fitting within the grid lines
         block_rect = pygame.Rect(block[0] * GRID_SIZE, block[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE)
-        pygame.draw.rect(game_window, (0, 255, 0), block_rect)
-
-        print(snake_blocks, ' snake block')
+        pygame.draw.rect(game_window, (snake_color1, snake_color2, snake_color3), block_rect)
 
     #display the snake food
     # pygame.Rect(x, y, width, height)
     for food in snake_food:
-        food_rect = pygame.Rect(food[0], food[1], GRID_SIZE, GRID_SIZE)
+        #remeber that food is a tuple [(x,y), (x,y)]
+    
+        food_rect = pygame.Rect(food[0] * GRID_SIZE, food[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE)
         pygame.draw.rect(game_window, (255,0,0), food_rect)
-        print(snake_food)
-
+    
         if (head_x, head_y) == food:
             snake_blocks.append(snake_blocks[-1])  # Add a new block to the snake
-            snake_food.remove(food)  # Remove the food that was eaten
+            # snake_food.remove(food)  # Remove the food that was eaten
+            snake_length += 1
+            print(' hit +1 snake length is now => ', snake_length)
+            # Remove the eaten food and add a new one
+            snake_food.remove((head_x, head_y))
 
-    
-    
-    # Update the screen
-    pygame.display.update()
-    
-    # Set the game's frame rate
-    FPS = 10
 
-    clock.tick(FPS)
+
+            for i in range(food_counter):
+                snake_food.append((random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT)))
+                
+                
+                
+                    
+
+            
