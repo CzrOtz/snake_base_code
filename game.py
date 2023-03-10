@@ -1,4 +1,3 @@
-from tkinter import Grid
 import pygame
 import random
 
@@ -135,10 +134,12 @@ while running:
 
 
             for i in range(food_counter):
-                snake_food.append((random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT)))
-                
-                
-                
-                    
+                snake_food.append((random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT)))   
 
-            
+    # Update the screen
+    pygame.display.update()
+    
+    # Set the game's frame rate
+    FPS = 10
+
+    clock.tick(FPS)
